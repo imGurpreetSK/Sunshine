@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        app:actionProviderClass="android.support.v7.widget.ShareActionProvider"
+        android:id="@+id/shareActionProv"
+        app:showAsAction="always"
+        android:title="@string/action_share" />
+
+    <item
+        android:title="@string/settings"
+        android:id="@+id/settings"
+        android:orderInCategory="100"/>
+
+    <item
+        android:id="@+id/show_location"
+        android:title="@string/launch_map"
+        android:orderInCategory="100"/>
+
+</menu>
