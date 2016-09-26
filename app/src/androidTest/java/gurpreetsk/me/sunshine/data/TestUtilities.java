@@ -12,7 +12,8 @@ import android.test.AndroidTestCase;
 import java.util.Map;
 import java.util.Set;
 
-import gurpreetsk.me.sunshine.test.PollingCheck;
+import gurpreetsk.me.sunshine.utils.PollingCheck;
+
 
 /*
     Students: These are functions and some test data to make it easier to test your database and

@@ -24,6 +24,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="gurpreetsk.me.sunshine.MainActivity" />
         </activity>
+        
+        <provider
+            android:authorities="gurpreetsk.me.sunshine"
+            android:name=".data.WeatherProvider" />
+        
         <activity android:name=".SettingsActivity"
             android:parentActivityName=".MainActivity">
             <meta-data
