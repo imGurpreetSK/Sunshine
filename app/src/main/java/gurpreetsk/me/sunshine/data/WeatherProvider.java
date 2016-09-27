@@ -68,9 +68,9 @@ public class WeatherProvider extends ContentProvider {
         // 2) Use the addURI function to match each of the types.  Use the constants from
         // WeatherContract to help define the types to the UriMatcher.
 
-        matcher.addURI(authority, WeatherContract.PATH_LOCATION, WEATHER);      //(authority, path, code)
-        matcher.addURI(authority, WeatherContract.PATH_LOCATION + "/*", WEATHER_WITH_LOCATION);
-        matcher.addURI(authority, WeatherContract.PATH_LOCATION + "/*/#", WEATHER_WITH_LOCATION_AND_DATE);
+        matcher.addURI(authority, WeatherContract.PATH_WEATHER, WEATHER);      //(authority, path, code)
+        matcher.addURI(authority, WeatherContract.PATH_WEATHER + "/*", WEATHER_WITH_LOCATION);
+        matcher.addURI(authority, WeatherContract.PATH_WEATHER + "/*/#", WEATHER_WITH_LOCATION_AND_DATE);
 
         matcher.addURI(authority, WeatherContract.PATH_LOCATION, LOCATION);
 
@@ -239,17 +239,33 @@ public class WeatherProvider extends ContentProvider {
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         // Student: Start by getting a writable database
+        SQLiteDatabase database = mOpenHelper.getWritableDatabase();
 
         // Student: Use the uriMatcher to match the WEATHER and LOCATION URI's we are going to
         // handle.  If it doesn't match these, throw an UnsupportedOperationException.
+        int match = sUriMatcher.match(uri);
+        int rowsDeleted;
+        if (selection == null) selection = "1";
 
+        switch (match) {
+            case WEATHER:
+                rowsDeleted = database.delete(WeatherContract.WeatherEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case LOCATION:
+                rowsDeleted = database.delete(WeatherContract.LocationEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
         // Student: A null value deletes all rows.  In my implementation of this, I only notified
         // the uri listeners (using the content resolver) if the rowsDeleted != 0 or the selection
         // is null.
         // Oh, and you should notify the listeners here.
-
+        if (rowsDeleted != 0)
+            getContext().getContentResolver().notifyChange(uri, null);
         // Student: return the actual rows deleted
-        return 0;
+
+        return rowsDeleted;
     }
 
     private void normalizeDate(ContentValues values) {
@@ -261,11 +277,37 @@ public class WeatherProvider extends ContentProvider {
     }
 
     @Override
-    public int update(
-            Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+
         // Student: This is a lot like the delete function.  We return the number of rows impacted
         // by the update.
-        return 0;
+        SQLiteDatabase database = mOpenHelper.getWritableDatabase();
+
+        // Student: Use the uriMatcher to match the WEATHER and LOCATION URI's we are going to
+        // handle.  If it doesn't match these, throw an UnsupportedOperationException.
+        int match = sUriMatcher.match(uri);
+        int rowsUpdated;
+        if (selection == null) selection = "1";
+
+        switch (match) {
+            case WEATHER:
+                rowsUpdated = database.delete(WeatherContract.WeatherEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case LOCATION:
+                rowsUpdated = database.delete(WeatherContract.LocationEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        // Student: A null value deletes all rows.  In my implementation of this, I only notified
+        // the uri listeners (using the content resolver) if the rowsDeleted != 0 or the selection
+        // is null.
+        // Oh, and you should notify the listeners here.
+        if (rowsUpdated != 0)
+            getContext().getContentResolver().notifyChange(uri, null);
+        // Student: return the actual rows deleted
+
+        return rowsUpdated;
     }
 
     @Override
